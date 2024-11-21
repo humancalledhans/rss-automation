@@ -1,0 +1,4 @@
+firebase-admin==6.2.0  # Check for the latest version when you implement.
+twilio==8.7.0
+python-dotenv
+sendgrid
