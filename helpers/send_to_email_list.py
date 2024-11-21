@@ -1,3 +1,4 @@
+import datetime
 import os
 import json
 from sendgrid import SendGridAPIClient
@@ -39,10 +40,9 @@ def send_email_to_lead(email, first_name, parsed_content):
 
 
 def send_to_email_list(parsed_content):
-    """Read leads from Firestore and send emails."""
-    if not can_send_email():
-        print("Daily email limit reached. Emails not sent.")
-        return
+    """Read leads from Firestore and send emails with individual email limits."""
+
+    EMAIL_INTERVAL_MINUTES = 30
 
     # Retrieve all leads from Firestore
     leads_ref = db.collection('leads')
@@ -52,9 +52,38 @@ def send_to_email_list(parsed_content):
         lead_data = lead.to_dict()
         email = lead_data.get('email')
         first_name = lead_data.get('first_name')
+        user_id = lead.id  # Use the document ID as the unique user ID
 
         if email:
+            # Check the last sent time for this user
+            user_email_limit_doc = db.collection(
+                'email_limits').document(user_id)
+            doc = user_email_limit_doc.get()
+            now = datetime.datetime.now()
+
+            if doc.exists:
+                data = doc.to_dict()
+                last_sent_time_str = data.get('last_sent_time')
+                last_sent_time = datetime.datetime.fromisoformat(
+                    last_sent_time_str) if last_sent_time_str else None
+
+                # Check if 30 minutes have passed since the last email
+                if last_sent_time:
+                    time_difference = (
+                        now - last_sent_time).total_seconds() / 60
+                    if time_difference < EMAIL_INTERVAL_MINUTES:
+                        print(f"Skipping {email}: Last email sent {time_difference:.2f} minutes ago. "
+                              f"Wait another {EMAIL_INTERVAL_MINUTES - time_difference:.2f} minutes.")
+                        continue
+
+            # Send the email
             print(f"Sending email to: {email}")
             send_email_to_lead(email, first_name, parsed_content)
+
+            # Update Firestore with the new last sent time
+            user_email_limit_doc.set({
+                'last_sent_time': now.isoformat()
+            }, merge=True)
+
         else:
             print(f"Skipping lead with no email: {lead_data}")

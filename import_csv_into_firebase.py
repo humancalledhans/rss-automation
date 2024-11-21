@@ -55,7 +55,20 @@ csv_file_path = 'testing.csv'
 
 
 def add_to_firestore(data):
-    db.collection('leads').add(data)
+    """Add a new lead to the Firestore 'leads' collection."""
+    # Add lead data to Firestore
+    lead_ref = db.collection('leads').add(data)
+
+    # Use the generated document ID to track email limits for this lead
+    # Firestore returns a tuple (collection, document ID)
+    lead_id = lead_ref[1].id
+
+    # Initialize 'last_sent_time' in the 'email_limits' collection
+    db.collection('email_limits').document(lead_id).set({
+        'last_sent_time': None  # No email sent yet
+    })
+
+    print(f"Added lead: {data['first_name']} with ID {lead_id}")
 
 
 # Read the CSV file and transfer data to Firestore
@@ -71,6 +84,5 @@ with open(csv_file_path, mode='r') as csv_file:
         }
 
         add_to_firestore(lead_data)
-        print(f"Added lead: {lead_data['first_name']}")
 
 print("Data transfer complete!")
