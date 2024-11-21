@@ -28,7 +28,7 @@ def send_email_to_lead(email, parsed_content):
         from_email='moneyclips@tradeklub.com',
         to_emails=email,
         subject='Your Latest Money Clips Update',
-        html_content=parsed_content
+        html_content=parsed_content.replace('\n', '<br>')
     )
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
