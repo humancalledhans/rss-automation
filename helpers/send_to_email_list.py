@@ -10,14 +10,16 @@ from firebase_admin import credentials, firestore, initialize_app
 load_dotenv()
 
 
-# Initialize Firebase
-google_creds_str = os.getenv("GOOGLE_CREDS")
+# Initialize Firebase only if not already initialized
+if not firebase_admin._apps:
+    google_creds_str = os.getenv("GOOGLE_CREDS")
 
-if google_creds_str:
-    google_creds = json.loads(google_creds_str)
-    cred = credentials.Certificate(google_creds)
-    initialize_app(cred)
-    db = firestore.client()
+    if google_creds_str:
+        google_creds = json.loads(google_creds_str)
+        cred = credentials.Certificate(google_creds)
+        firebase_admin.initialize_app(cred)
+
+db = firestore.client()  # Firestore client outside initialization block
 
 
 def send_email_to_lead(email, parsed_content):
