@@ -22,12 +22,12 @@ if not firebase_admin._apps:
 db = firestore.client()  # Firestore client outside initialization block
 
 
-def send_email_to_lead(email, parsed_content):
+def send_email_to_lead(email, first_name, parsed_content):
     """Send an email to a single lead."""
     message = Mail(
         from_email='moneyclips@tradeklub.com',
         to_emails=email,
-        subject='Your Latest Money Clips Update',
+        subject=f'{first_name}, Your Latest Money Clips Update',
         html_content=parsed_content.replace('\n', '<br>')
     )
     try:
@@ -51,9 +51,10 @@ def send_to_email_list(parsed_content):
     for lead in leads:
         lead_data = lead.to_dict()
         email = lead_data.get('email')
+        first_name = lead_data.get('first_name')
 
         if email:
             print(f"Sending email to: {email}")
-            send_email_to_lead(email, parsed_content)
+            send_email_to_lead(email, first_name, parsed_content)
         else:
             print(f"Skipping lead with no email: {lead_data}")
