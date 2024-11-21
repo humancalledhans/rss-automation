@@ -43,7 +43,7 @@ async def webhook(request: Request):
 
     # Create a list of dictionaries for each article
     news_content_list = [{'title': item['title'],
-                     'description': item['description_text']} for item in items_new]
+                          'description': item['description_text']} for item in items_new]
 
     # Parse the news content with ChatGPT
     parsed_content = await parse_with_chatgpt(news_content_list)
@@ -51,7 +51,7 @@ async def webhook(request: Request):
     print("parsed content check it out", parsed_content)
 
     # Send the parsed content to the email list
-    # send_to_email_list(email_limit_doc, parsed_content, url)
+    send_to_email_list(parsed_content)
 
     return {"message": "Webhook received and processed successfully"}
 

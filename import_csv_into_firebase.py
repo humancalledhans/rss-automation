@@ -1,7 +1,10 @@
 import re
+import json
+import os
 import csv
+from dotenv import load_dotenv
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import credentials, firestore, initialize_app
 
 
 def format_phone_number(number):
@@ -27,15 +30,24 @@ def format_phone_number(number):
     return formatted_number
 
 
-# Initialize Firestore
-cred = credentials.Certificate(
-    "outreach-automation-1-firebase-adminsdk-h1ff9-89f55056ff.json")  # Update this path
-firebase_admin.initialize_app(cred)
-db = firestore.client()
+load_dotenv()
+
+google_creds_str = os.getenv("GOOGLE_CREDS")
+
+# Parse the JSON string into a Python dictionary
+if google_creds_str:
+    google_creds = json.loads(google_creds_str)
+
+    # Use the credentials for Firebase or Google Cloud
+    cred = credentials.Certificate(google_creds)
+    initialize_app(cred)
+    db = firestore.client()
+
 
 # Define the CSV file path
 # Update this path
-csv_file_path = '(NEW) Trade Like The Pros Program - Subscriptions Master Tracker - TradeKlub'
+# csv_file_path = '(NEW) Trade Like The Pros Program - Subscriptions Master Tracker - TradeKlub'
+csv_file_path = 'testing.csv'
 
 # Function to add data to Firestore
 
@@ -57,6 +69,6 @@ with open(csv_file_path, mode='r') as csv_file:
         }
 
         add_to_firestore(lead_data)
-        print(f"Added lead: {lead_data['name']}")
+        print(f"Added lead: {lead_data['first_name']}")
 
 print("Data transfer complete!")

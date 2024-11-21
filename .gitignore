@@ -1,3 +1,5 @@
+*.json
+google-cloud-sdk
 /rss-automation
 *.csv
 

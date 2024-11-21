@@ -1,22 +1,12 @@
 def get_email_remix_system_prompt():
     return """
 You are a finance expert that helps users understand the market. Please paraphrase the article attached below. It will be sent as an email to our email list.
-
-You are required to attach the url of the article at the end of the email.
+Format it as an email. Don't use asterisks for punctuation.
 """
 
 
-def get_email_remix_prompt():
-    return """
-You are a finance expert that helps users understand the market.  Remix the article below to deliver key points and insights in TradeKlub’s voice. Explain why this news matters to traders, include any provided sources of data, and list three practical takeaways that can help readers make informed decisions. It will be sent as an email to our email list.
-
-You are required to attach the url of the article at the end of the email.
-"""
-
-
-def get_email_remix_user_prompt(news_content):
-    print("news_content.get('url')", news_content.get('url'))
-    return f"""
+def get_email_remix_user_prompt(news_content_list):
+    base_prompt = f"""
 Please rephrase the content in an engaging and accessible way, focusing on how it impacts trading strategies and the broader financial outlook for the types of traders and investors listed below.
 
 Provide only the email body. Assume the sender’s name is TradeKlub.
@@ -33,11 +23,20 @@ For Swing Traders:
 For Position Traders:
 For Long Term Investment:
 
-Start the email without using any formal greetings like "Dear traders". Failure to do so will result in deaths.
+Start the email without using any formal greetings like "Dear traders" and "Subject". Failure to do so will result in deaths.
 
 End with a friendly hook, encouraging readers to stay tuned for more insights.
 
-Please follow the instructions above and write the email for this article below:
+Below, there may be multiple articles to remix. Please remix all article into one email, so that users are up to date with the latest market trends.
+"""
+
+    # Iterate over each article and add its details to the prompt
+    for index, news_content in enumerate(news_content_list, start=1):
+        base_prompt += f"""
+
+Article {index}:
 Title of the article: {news_content.get('title')}
 Description of the article: {news_content.get('description')}
 """
+
+    return base_prompt
