@@ -24,6 +24,7 @@ if not firebase_admin._apps:
 
 db = firestore.client()  # Firestore client outside initialization block
 
+
 def can_send_email():
     """Check if the daily email limit has been reached and enforce a 30-minute interval."""
     now = datetime.datetime.now()
@@ -42,18 +43,18 @@ def can_send_email():
         last_sent_time = datetime.datetime.fromisoformat(
             last_sent_time_str) if last_sent_time_str else None
 
-        # Check if the daily limit is reached
-        if data.get('date') == today and emails_sent >= DAILY_EMAIL_LIMIT:
-            print(f"No! Daily limit of {DAILY_EMAIL_LIMIT} emails reached.")
-            return False  # Daily limit reached
+        # # Check if the daily limit is reached
+        # if data.get('date') == today and emails_sent >= DAILY_EMAIL_LIMIT:
+        #     print(f"No! Daily limit of {DAILY_EMAIL_LIMIT} emails reached.")
+        #     return False  # Daily limit reached
 
         # Check if 30 minutes have passed since the last email was sent
         if last_sent_time:
             time_difference = (now - last_sent_time).total_seconds() / 60
-            if time_difference < EMAIL_INTERVAL_MINUTES:
-                print(f"No! Last email was sent {time_difference:.2f} minutes ago. "
-                      f"Wait another {EMAIL_INTERVAL_MINUTES - time_difference:.2f} minutes.")
-                return False  # 30-minute interval not reached yet
+        #     if time_difference < EMAIL_INTERVAL_MINUTES:
+        #         print(f"No! Last email was sent {time_difference:.2f} minutes ago. "
+        #               f"Wait another {EMAIL_INTERVAL_MINUTES - time_difference:.2f} minutes.")
+        #         return False  # 30-minute interval not reached yet
 
         # Update the counter and last sent time
         email_limit_doc.update({
