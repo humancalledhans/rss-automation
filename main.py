@@ -36,6 +36,8 @@ async def webhook(request: Request):
     if not data:
         return {"error": "No data received"}
 
+    print("Data received:", data)
+
     # Extract article details
     title = data.get("title", "No Title")
     description = data.get("description", "No Description")
