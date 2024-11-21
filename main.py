@@ -43,7 +43,7 @@ async def webhook(request: Request):
     news_content = f"Title: {title}\n\nDescription: {description}"
 
     # Parse the news content with ChatGPT
-    parsed_content = parse_with_chatgpt(news_content)
+    parsed_content = await parse_with_chatgpt(news_content)
 
     print("parsed content check it out", parsed_content)
 
