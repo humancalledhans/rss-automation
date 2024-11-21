@@ -73,10 +73,3 @@ def can_send_email():
         })
         print("Yes! First email being sent now.")
         return True
-
-
-# Example Usage
-if can_send_email():
-    print("Email sent successfully!")
-else:
-    print("Email not sent.")
