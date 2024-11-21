@@ -35,13 +35,15 @@ load_dotenv()
 google_creds_str = os.getenv("GOOGLE_CREDS")
 
 # Parse the JSON string into a Python dictionary
-if google_creds_str:
-    google_creds = json.loads(google_creds_str)
+if not firebase_admin._apps:
+    google_creds_str = os.getenv("GOOGLE_CREDS")
 
-    # Use the credentials for Firebase or Google Cloud
-    cred = credentials.Certificate(google_creds)
-    initialize_app(cred)
-    db = firestore.client()
+    if google_creds_str:
+        google_creds = json.loads(google_creds_str)
+        cred = credentials.Certificate(google_creds)
+        firebase_admin.initialize_app(cred)
+
+db = firestore.client()  # Firestore client outside initialization block
 
 
 # Define the CSV file path
