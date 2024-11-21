@@ -38,14 +38,15 @@ async def webhook(request: Request):
 
     print("Data received:", data)
 
-    # Extract article details
-    title = data.get("title", "No Title")
-    description = data.get("description", "No Description")
-    url = data.get("url", "No URL")
-    news_content = f"Title: {title}\n\nDescription: {description}"
+    # Extract the list of new items
+    items_new = data.get('data', {}).get('items_new', [])
+
+    # Create a list of dictionaries for each article
+    news_content_list = [{'title': item['title'],
+                     'description': item['description_text']} for item in items_new]
 
     # Parse the news content with ChatGPT
-    parsed_content = await parse_with_chatgpt(news_content)
+    parsed_content = await parse_with_chatgpt(news_content_list)
 
     print("parsed content check it out", parsed_content)
 

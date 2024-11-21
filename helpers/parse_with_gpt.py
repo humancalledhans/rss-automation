@@ -17,8 +17,8 @@ Format it as an email. Don't use asterisks for punctuation.
 """
 
 
-def get_email_remix_user_prompt(news_content):
-    return f"""
+def get_email_remix_user_prompt(news_content_list):
+    base_prompt = f"""
 Please rephrase the content in an engaging and accessible way, focusing on how it impacts trading strategies and the broader financial outlook for the types of traders and investors listed below.
 
 Provide only the email body. Assume the sender’s name is TradeKlub.
@@ -39,10 +39,19 @@ Start the email without using any formal greetings like "Dear traders" and "Subj
 
 End with a friendly hook, encouraging readers to stay tuned for more insights.
 
-Please follow the instructions above and write the email for this article below:
+Below, there may be multiple articles to remix. Please remix all article into one email, so that users are up to date with the latest market trends.
+"""
+
+    # Iterate over each article and add its details to the prompt
+    for index, news_content in enumerate(news_content_list, start=1):
+        base_prompt += f"""
+
+Article {index}:
 Title of the article: {news_content.get('title')}
 Description of the article: {news_content.get('description')}
 """
+
+    return base_prompt
 
 
 def append_read_more(final_response, news_content):
@@ -59,7 +68,7 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
-async def parse_with_chatgpt(news_content):
+async def parse_with_chatgpt(news_content_list):
     client = OpenAI()
 
     """Parse news content using ChatGPT with system and user prompts."""
@@ -74,7 +83,7 @@ async def parse_with_chatgpt(news_content):
                     {"role": "system",
                      "content": get_email_remix_system_prompt()},
                     {"role": "user", "content": get_email_remix_user_prompt(
-                        news_content)}
+                        news_content_list)}
                 ],
                 temperature=0.9,
             ),
