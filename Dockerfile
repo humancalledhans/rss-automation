@@ -1,30 +1,21 @@
-# Use an official Python runtime as a parent image (or any other language/runtime you prefer)
-FROM python:3.8-slim
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
-# Install cron
-RUN apt-get update && apt-get -y install cron
+# Set the working directory in the container
+WORKDIR /app
 
-# Set the working directory
-WORKDIR /usr/src/app
+# Upgrade pip
+RUN python -m pip install --upgrade pip
 
-# Copy your script and any other required files
-COPY your_script.py .
+# Copy requirements.txt and install dependencies
 COPY requirements.txt .
-
-# Install any dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Add crontab file in the cron directory
-COPY crontab /etc/cron.d/your-cron-job
+# Copy the rest of the application files
+COPY . .
 
-# Give execution rights on the cron job
-RUN chmod 0644 /etc/cron.d/your-cron-job
+# Expose the port that the app runs on
+EXPOSE 8000
 
-# Apply cron job
-RUN crontab /etc/cron.d/your-cron-job
-
-# Create the log file to be able to run tail
-RUN touch /var/log/cron.log
-
-# Run the command on container startup
-CMD cron && tail -f /var/log/cron.log
+# Command to run the application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -18,11 +18,11 @@ load_dotenv()
 app = FastAPI()
 
 # Firebase setup
-cred = credentials.Certificate("/path/to/your/firebase-credentials.json")
-if not firebase_admin._apps:
-    firebase_admin.initialize_app(cred)
-db = firestore.client()
-email_limit_doc = db.collection('settings').document('email_limits')
+# cred = credentials.Certificate("/path/to/your/firebase-credentials.json")
+# if not firebase_admin._apps:
+#     firebase_admin.initialize_app(cred)
+# db = firestore.client()
+# email_limit_doc = db.collection('settings').document('email_limits')
 
 # OpenAI API setup
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
