@@ -28,7 +28,7 @@ def send_email_to_lead(email, first_name, parsed_content):
     message = Mail(
         from_email='moneyclips@tradeklub.com',
         to_emails=email,
-        subject=f'{first_name}, Your Latest Money Clips Update',
+        subject=f'The Money Matrix Approach',
         html_content=parsed_content.replace('\n', '<br>')
     )
     try:
