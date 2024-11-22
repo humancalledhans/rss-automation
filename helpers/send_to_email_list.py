@@ -1,3 +1,4 @@
+import ast
 import datetime
 import os
 import json
@@ -28,8 +29,8 @@ def send_email_to_lead(email, first_name, parsed_content):
     message = Mail(
         from_email='moneyclips@tradeklub.com',
         to_emails=email,
-        subject=parsed_content.get('subject'),
-        html_content=parsed_content.get('email_body').replace('\n', '<br>')
+        subject=(ast.literal_eval(parsed_content)).get('subject'),
+        html_content=(ast.literal_eval(parsed_content)).get('email_body').replace('\n', '<br>')
     )
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
