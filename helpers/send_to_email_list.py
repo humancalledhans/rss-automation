@@ -30,7 +30,9 @@ def send_email_to_lead(email, first_name, parsed_content):
         from_email='moneyclips@tradeklub.com',
         to_emails=email,
         subject=(ast.literal_eval(parsed_content)).get('subject'),
-        html_content=(ast.literal_eval(parsed_content)).get('email_body').replace('\n', '<br>')
+        html_content=(ast.literal_eval(parsed_content)).get(
+            'email_body').replace('\n', '<br>')
+        # TODO: add a footer that suggests other articles, and redirects users to other platforms (instagram, twitter, fb, etc.)
     )
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
