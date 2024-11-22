@@ -51,7 +51,7 @@ async def webhook(request: Request):
     print("parsed content check it out", parsed_content)
 
     # Send the parsed content to the email list
-    # send_to_email_list(parsed_content)
+    send_to_email_list(parsed_content)
 
     return {"message": "Webhook received and processed successfully"}
 

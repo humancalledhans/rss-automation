@@ -28,8 +28,8 @@ def send_email_to_lead(email, first_name, parsed_content):
     message = Mail(
         from_email='moneyclips@tradeklub.com',
         to_emails=email,
-        subject=f'The Money Matrix Approach',
-        html_content=parsed_content.replace('\n', '<br>')
+        subject=parsed_content.get('subject'),
+        html_content=parsed_content.get('email_body').replace('\n', '<br>')
     )
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
