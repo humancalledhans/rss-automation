@@ -1,15 +1,21 @@
-def get_email_remix_system_prompt():
-    return """
+def get_email_remix_system_prompt(format):
+    return f"""
 You are a finance expert that helps users understand the market. Please paraphrase the article attached below. It will be sent as an email to our email list.
 Format it as an email. Don't use asterisks for punctuation.
+
+Format: {format}
+Return the result in JSON format.
 """
 
 
-def get_email_remix_user_prompt(news_content_list):
+def get_email_remix_user_prompt(news_content_list, format):
     base_prompt = f"""
 Please rephrase the content in an engaging and accessible way, focusing on how it impacts trading strategies and the broader financial outlook for the types of traders and investors listed below.
 
-Provide only the email body. Assume the sender’s name is TradeKlub.
+Provide only the subject and the email body, following the json format listed below:
+{format}
+
+Assume the sender’s name is TradeKlub.
 
 TradeKlub Money Clips Email Format:
 Remix of Title to Make It Engaging
