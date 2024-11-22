@@ -42,20 +42,31 @@ db = firestore.client()  # Firestore client outside initialization block
 def send_email_to_lead(email, first_name, parsed_content):
     """Send an email to a single lead."""
 
+    # Parse the content
     parsed_content = ast.literal_eval(parsed_content)
-    email_body = parsed_content.get('email_body')
-    message = Mail(
-        from_email='moneyclips@tradeklub.com',
-        to_emails=email,
-        subject=(ast.literal_eval(parsed_content)).get('subject'),
-        html_content=email_body.replace('\n', '<br>') + '<br><br><footer>'
+    email_body = parsed_content.get('email_body', '')
+    subject = parsed_content.get('subject', 'Default Subject')
+
+    # Construct HTML content
+    html_content = (
+        email_body.replace('\n', '<br>') +
+        '<br><br><footer>'
         '<p>For more financial news and updates, visit '
         '<a href="https://www.tradeklub.com">TradeKlub</a></p>'
         '<p>Want to learn how to trade and invest? Check out our courses at '
         '<a href="https://www.tradelikethepros.com">Trade Like The Pros</a></p>'
         '</footer>'
-        # TODO: add a footer that suggests other articles, and redirects users to other platforms (instagram, twitter, fb, etc.)
     )
+
+    # Create the email message
+    message = Mail(
+        from_email='moneyclips@tradeklub.com',
+        to_emails=email,
+        subject=subject,
+        html_content=html_content
+    )
+
+    # Send the email
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
         response = sg.send(message)
