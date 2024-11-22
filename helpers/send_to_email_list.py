@@ -69,7 +69,7 @@ def send_email_to_lead(email, first_name, parsed_content):
     message = Mail(
         from_email='moneyclips@tradeklub.com',
         to_emails=email,
-        subject="Welcome to <strong>TradeKlub</strong>: Your Financial News Journey Starts Today! 🚀",
+        subject="Welcome to TradeKlub: Your Financial News Journey Starts Today! 🚀",
         html_content=f"""Dear {first_name},
 
 Welcome to TradeKlub! We’re thrilled to have you join our growing community of finance enthusiasts, investors, and professionals. Starting today, you’ll receive exclusive financial news and timely alerts directly in your inbox—designed to keep you informed and ahead of the game. 📈
@@ -88,9 +88,8 @@ In the meantime, keep an eye on your inbox for today’s first edition of financ
 If you have any questions, feedback, or just want to say hello, feel free to reply to this email. We’d love to hear from you.
 
 Welcome aboard,
-The TradeKlub Team"""
+The TradeKlub Team""".replace("\n", "<br>")
     )
-
 
     # Send the email
     try:
