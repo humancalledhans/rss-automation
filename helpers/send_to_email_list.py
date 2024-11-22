@@ -59,12 +59,38 @@ def send_email_to_lead(email, first_name, parsed_content):
     )
 
     # Create the email message
+    # message = Mail(
+    #     from_email='moneyclips@tradeklub.com',
+    #     to_emails=email,
+    #     subject=subject,
+    #     html_content=html_content
+    # )
+
     message = Mail(
         from_email='moneyclips@tradeklub.com',
         to_emails=email,
-        subject=subject,
-        html_content=html_content
+        subject="Welcome to <strong>TradeKlub</strong>: Your Financial News Journey Starts Today! 🚀",
+        html_content=f"""Dear {first_name},
+
+Welcome to TradeKlub! We’re thrilled to have you join our growing community of finance enthusiasts, investors, and professionals. Starting today, you’ll receive exclusive financial news and timely alerts directly in your inbox—designed to keep you informed and ahead of the game. 📈
+
+But that’s just the beginning.
+
+<strong>Here’s what’s coming next:</strong>
+
+<strong>•	Website Launch:</strong> Next week, we’re unveiling the TradeKlub website, your go-to hub for financial updates, expert insights, and tools to enhance your financial journey.
+<strong>•	Push Notifications:</strong> Stay updated in real-time with push notifications delivering instant news and alerts straight to your device.
+
+We can’t wait for you to experience the full suite of TradeKlub services.
+
+In the meantime, keep an eye on your inbox for today’s first edition of financial updates. Your journey toward smarter financial decisions begins now!
+
+If you have any questions, feedback, or just want to say hello, feel free to reply to this email. We’d love to hear from you.
+
+Welcome aboard,
+The TradeKlub Team"""
     )
+
 
     # Send the email
     try:

@@ -48,8 +48,8 @@ db = firestore.client()  # Firestore client outside initialization block
 
 # Define the CSV file path
 # Update this path
-# csv_file_path = '(NEW) Trade Like The Pros Program - Subscriptions Master Tracker - TradeKlub'
-csv_file_path = 'testing.csv'
+csv_file_path = '(NEW) Trade Like The Pros Program - Subscriptions Master Tracker - TradeKlub'
+# csv_file_path = 'testing.csv'
 
 # Function to add data to Firestore
 
