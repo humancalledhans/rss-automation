@@ -79,9 +79,10 @@ But that’s just the beginning.
 <strong>Here’s what’s coming next:</strong>
 
 <strong>•	Website Launch:</strong> Next week, we’re unveiling the TradeKlub website, your go-to hub for financial updates, expert insights, and tools to enhance your financial journey.
+
 <strong>•	Push Notifications:</strong> Stay updated in real-time with push notifications delivering instant news and alerts straight to your device.
 
-We can’t wait for you to experience the full suite of TradeKlub services.
+We look forward to you experiencing the full suite of TradeKlub services.
 
 In the meantime, keep an eye on your inbox for today’s first edition of financial updates. Your journey toward smarter financial decisions begins now!
 
