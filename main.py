@@ -10,6 +10,7 @@ from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
+from router import kajabi
 from get_prompt import get_email_remix_system_prompt
 from helpers.parse_with_gpt import parse_with_chatgpt
 from helpers.send_to_email_list import send_to_email_list
@@ -19,6 +20,7 @@ load_dotenv()
 
 # Initialize FastAPI app
 app = FastAPI()
+app.include_router(kajabi.router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -52,6 +54,11 @@ if not firebase_admin._apps:
     firebase_admin.initialize_app(cred)
 
 db = firestore.client()
+
+
+@app.post("/kajabi")
+async def kajabi():
+    pass
 
 subscriptions = []
 
