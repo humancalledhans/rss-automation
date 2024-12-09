@@ -139,10 +139,10 @@ async def create_custom_campaign(
         'setup_fee_decimal': 0.0, 'quantity': 1}}
     """
 
-    event = req_body.payload.event
-    user_email = req_body.payload.member_email
-    user_first_name = req_body.payload.member_first_name
-    user_last_name = req_body.payload.member_last_name
+    event = req_body.payload.get('event')
+    user_email = req_body.payload.get('member_email')
+    user_first_name = req_body.payload.get('member_first_name')
+    user_last_name = req_body.payload.get('member_last_name')
 
     if event == 'purchase.created':
         lead_data = {
