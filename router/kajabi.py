@@ -3,9 +3,11 @@ from pydantic import BaseModel
 from typing import Dict, Any
 import firebase_admin
 from firebase_admin import credentials, firestore
+from dotenv import load_dotenv
 import os
 import json
 
+load_dotenv()
 
 if os.getenv("ENV") == "production":
     # Initialize Firebase only if not already initialized
