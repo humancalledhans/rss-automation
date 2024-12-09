@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Body
 from pydantic import BaseModel
 from typing import Dict, Any
 
@@ -25,7 +25,7 @@ class KajabiWebhookPayload(BaseModel):
 
 @router.post('/kajabi')
 async def create_custom_campaign(
-    req_body: Any,
+    req_body: dict = Body(...),
     # files: Optional[List[UploadFile]] = File([])
 ):
 
