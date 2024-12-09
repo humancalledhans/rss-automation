@@ -4,7 +4,6 @@ import os
 import json
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from can_send_email import can_send_email
 from dotenv import load_dotenv
 import firebase_admin
 from firebase_admin import credentials, firestore, initialize_app
@@ -14,10 +13,35 @@ load_dotenv()
 
 # Initialize Firebase only if not already initialized
 if not firebase_admin._apps:
-    google_creds_str = os.getenv("GOOGLE_CREDS")
+    type_value = os.getenv("GOOGLE_TYPE")
+    project_id = os.getenv("GOOGLE_PROJECT_ID")
+    private_key_id = os.getenv("GOOGLE_PRIVATE_KEY_ID")
+    private_key = os.getenv("GOOGLE_PRIVATE_KEY").replace("\\n", "\n")
+    client_email = os.getenv("GOOGLE_CLIENT_EMAIL")
+    client_id = os.getenv("GOOGLE_CLIENT_ID")
+    auth_uri = os.getenv("GOOGLE_AUTH_URI")
+    token_uri = os.getenv("GOOGLE_TOKEN_URI")
+    auth_provider_x509_cert_url = os.getenv(
+        "GOOGLE_AUTH_PROVIDER_X509_CERT_URL")
+    client_x509_cert_url = os.getenv("GOOGLE_AUTH_CLIENT_X509_CERT_URL")
+    universe_domain = os.getenv("GOOGLE_AUTH_UNIVERSE_DOMAIN")
 
-    if google_creds_str:
-        google_creds = json.loads(google_creds_str)
+    google_creds = {
+        "type": type_value,
+        "project_id": project_id,
+        "private_key_id": private_key_id,
+        "private_key": private_key,
+        "client_email": client_email,
+        "client_id": client_id,
+        "auth_uri": auth_uri,
+        "token_uri": token_uri,
+        "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
+        "client_x509_cert_url": client_x509_cert_url,
+        "universe_domain": universe_domain
+    }
+
+    if google_creds:
+        # Pass the credentials dictionary directly without JSON serialization
         cred = credentials.Certificate(google_creds)
         firebase_admin.initialize_app(cred)
 
