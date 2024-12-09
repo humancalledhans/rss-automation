@@ -7,29 +7,6 @@ import firebase_admin
 from firebase_admin import credentials, firestore, initialize_app
 
 
-def format_phone_number(number):
-    # Remove '='
-    cleaned_number = number.replace('=', '').strip()
-
-    # Extract digits
-    digits = re.sub(r'[^0-9]', '', cleaned_number)
-
-    # Check the length of the cleaned digits
-    if len(digits) <= 1:
-        return ''
-
-    # If there's a '+' sign in the cleaned_number, keep it
-    if '+' in cleaned_number:
-        formatted_number = '+' + digits
-    # If there's a '(' or ')' and no '+1', prepend with '+1'
-    elif '(' in cleaned_number or ')' in cleaned_number and not cleaned_number.startswith('+1'):
-        formatted_number = '+1' + digits
-    else:
-        formatted_number = digits
-
-    return formatted_number
-
-
 load_dotenv()
 
 # google_creds_str = os.getenv("GOOGLE_CREDS")
