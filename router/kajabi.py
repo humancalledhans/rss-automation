@@ -70,26 +70,32 @@ class KajabiPayload(BaseModel):
 
 def add_to_firestore(data):
     """Add a new lead to the Firestore 'leads' collection if the email doesn't already exist."""
-    # Check if the email already exists in the 'leads' collection
-    existing_lead = db.collection('leads').where(
-        'email', '==', data['email']).get()
 
-    if existing_lead:
-        print(f"Email {data['email']} already exists. Skipping...")
-        return  # Skip adding this lead if the email already exists
+    print('add to firestore actually called with ', data)
+    try:
+        # Check if the email already exists in the 'leads' collection
+        existing_lead = db.collection('leads').where(
+            'email', '==', data['email']).get()
 
-    # Add lead data to Firestore
-    lead_ref = db.collection('leads').add(data)
+        if existing_lead:
+            print(f"Email {data['email']} already exists. Skipping...")
+            return  # Skip adding this lead if the email already exists
 
-    # Use the generated document ID to track email limits for this lead
-    lead_id = lead_ref[1].id
+        # Add lead data to Firestore
+        lead_ref = db.collection('leads').add(data)
 
-    # Initialize 'last_sent_time' in the 'email_limits' collection
-    db.collection('email_limits').document(lead_id).set({
-        'last_sent_time': None  # No email sent yet
-    })
+        # Use the generated document ID to track email limits for this lead
+        lead_id = lead_ref[1].id
 
-    print(f"Added lead: {data['first_name']} with ID {lead_id}")
+        # Initialize 'last_sent_time' in the 'email_limits' collection
+        db.collection('email_limits').document(lead_id).set({
+            'last_sent_time': None  # No email sent yet
+        })
+
+        print(f"Added lead: {data['first_name']} with ID {lead_id}")
+
+    except Exception as e:
+        print(f"Error adding to Firestore: {str(e)}")
 
 
 @router.post('/kajabi')
@@ -151,9 +157,10 @@ async def create_custom_campaign(
             "last_name": user_last_name,
             "date_added": firestore.SERVER_TIMESTAMP
         }
+
+        print('calling add to firstore')
         add_to_firestore(lead_data)
 
-    print(f"""new subscriber created {user_email} at {
-          firestore.SERVER_TIMESTAMP}!!""")
+    print(f"""new subscriber created {user_email}!!""")
 
     return {"status": "success", "data": f"new subscriber created {user_email}"}
