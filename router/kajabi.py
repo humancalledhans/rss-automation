@@ -145,7 +145,7 @@ async def create_custom_campaign(
         'setup_fee_decimal': 0.0, 'quantity': 1}}
     """
 
-    event = req_body.payload.get('event')
+    event = req_body.event
     user_email = req_body.payload.get('member_email')
     user_first_name = req_body.payload.get('member_first_name')
     user_last_name = req_body.payload.get('member_last_name')
