@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 import os
 import json
 
+from create_users_from_leads import create_users_from_leads
+
 load_dotenv()
 
 if os.getenv("ENV") == "production":
@@ -162,5 +164,8 @@ async def create_custom_campaign(
         add_to_firestore(lead_data)
 
     print(f"""new subscriber created {user_email}!!""")
+
+    # create and send temp passwords
+    create_users_from_leads()
 
     return {"status": "success", "data": f"new subscriber created {user_email}"}
