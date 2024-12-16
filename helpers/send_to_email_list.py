@@ -153,7 +153,7 @@ def send_to_email_list(parsed_content):
         first_name = lead_data.get('first_name')
         user_id = lead.id  # Use the document ID as the unique user ID
 
-        if email:
+        if email and email != 'workhansyap@gmail.com':
             # Check the last sent time for this user
             user_email_limit_doc = db.collection(
                 'email_limits').document(user_id)
