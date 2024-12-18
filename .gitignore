@@ -130,3 +130,5 @@ cython_debug/
 
 # VSCode settings (optional)
 .vscode/
+
+scripts.txt

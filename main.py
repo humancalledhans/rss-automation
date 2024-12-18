@@ -10,6 +10,7 @@ from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
+from firebase_fcm import send_multicast_message
 from router import kajabi
 from get_prompt import get_email_remix_system_prompt
 from helpers.parse_with_gpt import parse_with_chatgpt
@@ -48,12 +49,54 @@ firebase_creds = {
     "token_uri": "https://oauth2.googleapis.com/token",
 }
 
-# Initialize Firebase Admin SDK
-cred = credentials.Certificate(firebase_creds)
-if not firebase_admin._apps:
-    firebase_admin.initialize_app(cred)
+if os.getenv("ENV") == "production":
+    # Initialize Firebase only if not already initialized
+    if not firebase_admin._apps:
+        google_creds_str = os.getenv("GOOGLE_CREDS")
 
-db = firestore.client()
+        if google_creds_str:
+            google_creds = json.loads(google_creds_str)
+            cred = credentials.Certificate(google_creds)
+            firebase_admin.initialize_app(cred)
+
+    db = firestore.client()  # Firestore client outside initialization block
+
+
+else:
+    if not firebase_admin._apps:
+        type_value = os.getenv("GOOGLE_TYPE")
+        project_id = os.getenv("GOOGLE_PROJECT_ID")
+        private_key_id = os.getenv("GOOGLE_PRIVATE_KEY_ID")
+        private_key = os.getenv("GOOGLE_PRIVATE_KEY").replace("\\n", "\n")
+        client_email = os.getenv("GOOGLE_CLIENT_EMAIL")
+        client_id = os.getenv("GOOGLE_CLIENT_ID")
+        auth_uri = os.getenv("GOOGLE_AUTH_URI")
+        token_uri = os.getenv("GOOGLE_TOKEN_URI")
+        auth_provider_x509_cert_url = os.getenv(
+            "GOOGLE_AUTH_PROVIDER_X509_CERT_URL")
+        client_x509_cert_url = os.getenv("GOOGLE_AUTH_CLIENT_X509_CERT_URL")
+        universe_domain = os.getenv("GOOGLE_AUTH_UNIVERSE_DOMAIN")
+
+        google_creds = {
+            "type": type_value,
+            "project_id": project_id,
+            "private_key_id": private_key_id,
+            "private_key": private_key,
+            "client_email": client_email,
+            "client_id": client_id,
+            "auth_uri": auth_uri,
+            "token_uri": token_uri,
+            "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
+            "client_x509_cert_url": client_x509_cert_url,
+            "universe_domain": universe_domain
+        }
+
+        if google_creds:
+            # Pass the credentials dictionary directly without JSON serialization
+            cred = credentials.Certificate(google_creds)
+            firebase_admin.initialize_app(cred)
+
+    db = firestore.client()  # Firestore client outside initialization block
 
 
 @app.post("/kajabi")
@@ -66,6 +109,30 @@ subscriptions = []
 # Define a Pydantic model for the request body
 class Subscription(BaseModel):
     token: str
+
+
+@app.post("/updateToken")
+async def update_token(subscription: Subscription):
+    """
+    Update the FCM token in Firestore.
+    """
+    try:
+        token = subscription.token
+
+        # Here you would check if the token already exists, update or insert accordingly
+        users_ref = db.collection("users")
+        query = users_ref.where("fcm_token", "==", token).stream()
+
+        if any(query):  # Token is already stored, update if needed
+            # Update logic here, e.g., update timestamp or other user data
+            return {"message": "Token already exists, updated if necessary"}
+        else:
+            # If not found, add the new token
+            user_ref = db.collection("users").document()
+            user_ref.set({"fcm_token": token})
+            return {"message": "Token updated"}
+    except Exception as e:
+        return {"error": f"Failed to update token: {str(e)}"}
 
 
 @app.post("/subscribe")
@@ -128,10 +195,9 @@ async def send_notification(payload: NotificationPayload):
             tokens=tokens,
         )
 
-        print("multi cast message being sent", message)
-        response = messaging.send_multicast(message)
+        response = send_multicast_message(message)
 
-        return {"message": f"Notifications sent to {response.success_count} users"}
+        return {"message": f"Notifications sent to {response.get('success_count')} users"}
     except Exception as e:
         return {"error": f"Failed to send notification: {str(e)}"}
 
